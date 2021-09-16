@@ -6,11 +6,11 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: article
 output:
+  bookdown::html_document2: 
+    toc: false
   bookdown::word_document2: 
     toc: false
     number_sections: true
-  bookdown::html_document2: 
-    toc: false
 bibliography: ../references.bib
 csl: ../apa.csl
 ---
@@ -55,21 +55,18 @@ _Continue by creating plots or tables of the outcome(s) of interest and the pred
 
 _To get some further insight into your data, if reasonable you could compute simple statistics (e.g. t-tests, simple regression model with 1 predictor, etc.) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any "p<0.05 means statistical significance" interpretation is not valid._
 
-Table \@ref(tab:summarytable) shows a table summarizing the data.
 
-
-```{r summarytable,  echo=FALSE}
-resulttable=readRDS("../../results/summarytable.rds")
-knitr::kable(resulttable, caption = 'Data summary table.')
-```
-
-
-Figure \@ref(fig:resultfigure) shows a scatterplot figure produced by one of the R scripts.
+Figure \@ref(fig:resultfigure) plots Death Rates for People Killed in Crashes Involving a Driver with BAC =>0.08% by State, 2012 (All Ages)
 
 ```{r resultfigure,  fig.cap='Analysis figure.', echo=FALSE}
 knitr::include_graphics("../../results/resultfigure.png")
 ```
 
+Figure \@ref(fig:resultfigure) plots Death Rates for People Killed in Crashes Involving a Driver with BAC =>0.08% by State, 2012 (Age 0-20)
+
+```{r resultfigure2,  fig.cap='Analysis figure.', echo=FALSE}
+knitr::include_graphics("../../results/resultfigure2.png")
+```
 
 ## Full analysis
 

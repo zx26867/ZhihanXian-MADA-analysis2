@@ -16,31 +16,31 @@ data_location <- here::here("data","processed_data","processeddata.rds")
 #load data. 
 mydata <- readRDS(data_location)
 
-######################################
-#Data exploration/description
-######################################
-#I'm using basic R commands here.
-#Lots of good packages exist to do more.
-#For instance check out the tableone or skimr packages
-
-#summarize data 
-mysummary = summary(mydata)
-
-#look at summary
-print(mysummary)
-
-#do the same, but with a bit of trickery to get things into the 
-#shape of a data frame (for easier saving/showing in manuscript)
-summary_df = data.frame(do.call(cbind, lapply(mydata, summary)))
-
-#save data frame table to file for later use in manuscript
-summarytable_file = here("results", "summarytable.rds")
-saveRDS(summary_df, file = summarytable_file)
 
 
-#make a scatterplot of data
-#we also add a linear regression line to it
-p1 <- mydata %>% ggplot(aes(x=Height, y=Weight)) + geom_point() + geom_smooth(method='lm')
+#I want to plot the death rate for drunk driving accidents for each state,
+#but first I need to do some data mangement to get the abbreviations.
+#Here I use some R stored datasets on states and abbreviations to create 
+#a new data frame to merge with mydata
+abb <- as.data.frame(cbind(state.name, state.abb))
+abb <- rename(abb, State = state.name)
+
+
+#now the merge
+mydata <- merge(mydata, abb, by = "State")
+
+#checking. looks good
+glimpse(mydata)
+
+
+
+#Now we plot the data by state for Rate of deaths (per 100,000 population)
+#for people killed in crashes involving a driver with BAC =>0.08% for all ages
+p1 <- mydata %>% ggplot(aes(x=state.abb, y=All.Ages..2012)) + geom_bar(stat="identity") +
+  ggtitle("Drunk Driving Death Rates by State, USA, 2012 (All Ages)") +
+  ylab("Death Rate per 100k (All Ages)") + xlab("State")
+
+
 
 #look at figure
 plot(p1)
@@ -49,21 +49,39 @@ plot(p1)
 figure_file = here("results","resultfigure.png")
 ggsave(filename = figure_file, plot=p1) 
 
-######################################
-#Data fitting/statistical analysis
-######################################
 
-# fit linear model
-lmfit <- lm(Weight ~ Height, mydata)  
 
-# place results from fit into a data frame with the tidy function
-lmtable <- broom::tidy(lmfit)
+#Now we plot the data by state for Rate of deaths (per 100,000 population)
+#for people killed in crashes involving a driver with BAC =>0.08% for ages 0-20
+p2 <- mydata %>% ggplot(aes(x=state.abb, y=Ages.0.20..2012)) + geom_bar(stat="identity") +
+  ggtitle("Drunk Driving Death Rates by State, USA, 2012 (Ages 0-20)") +
+  ylab("Death Rate per 100k (Ages 0-20)") + xlab("State")
 
-#look at fit results
-print(lmtable)
 
-# save fit results table  
-table_file = here("results", "resulttable.rds")
-saveRDS(lmtable, file = table_file)
 
-  
+#look at figure
+plot(p2)
+
+#save figure
+figure_file = here("results","resultfigure2.png")
+ggsave(filename = figure_file, plot=p2) 
+
+
+
+
+#Now we plot the data by state for Rate of deaths (per 100,000 population)
+#for people killed in crashes involving a driver with BAC =>0.08% for ages 21-34
+p3 <- mydata %>% ggplot(aes(x=state.abb, y=Ages.21.34..2012)) + geom_bar(stat="identity") +
+  ggtitle("Drunk Driving  Death Rates by State, USA, 2012 (Ages 21-34)") +
+  ylab("Death Rate per 100k (Ages 21-34)") + xlab("State")
+
+
+
+#look at figure
+plot(p3)
+
+#save figure
+figure_file = here("results","resultfigure3.png")
+ggsave(filename = figure_file, plot=p3) 
+
+
